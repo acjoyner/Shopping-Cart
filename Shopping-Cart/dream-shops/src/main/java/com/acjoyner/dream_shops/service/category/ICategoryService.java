@@ -1,0 +1,16 @@
+package com.acjoyner.dream_shops.service.category;
+
+import com.acjoyner.dream_shops.exceptions.AlreadyExistsException;
+import com.acjoyner.dream_shops.model.Category;
+
+import java.util.List;
+
+public interface ICategoryService {
+    Category getCategoryById(Long id);
+    Category getCategoryByName(String name);
+    List<Category> getAllCategories();
+    Category addCategory(Category category) throws AlreadyExistsException;
+    Category updateCategory(Category category,  Long id);
+    void deleteCategoryById(Long id);
+
+}
