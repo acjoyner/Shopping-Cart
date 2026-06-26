@@ -1,10 +1,10 @@
 package com.acjoyner.dream_shops.service.product;
 
+import com.acjoyner.dream_shops.dto.ProductDto;
 import com.acjoyner.dream_shops.model.Product;
 import com.acjoyner.dream_shops.request.AddProductRequest;
 import com.acjoyner.dream_shops.request.ProductUpdateRequest;
 
-import java.lang.classfile.instruction.LineNumber;
 import java.util.List;
 
 public interface IProductService {
@@ -20,4 +20,7 @@ public interface IProductService {
     List<Product> getProductsByBrandAndName(String category, String name);
     Long countProductsByBrandAndName(String brand, String name);
 
+    List<ProductDto> getConvertedProducts(List<Product> products);
+
+    ProductDto convertToDto(Product product);
 }
