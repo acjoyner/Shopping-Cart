@@ -90,12 +90,23 @@ Example: `GET http://localhost:8080/api/v1/products`
 
 ## Key Features
 
+- **JWT Authentication** — Secure access using JSON Web Tokens (JWT)
 - **Product Management** — CRUD operations for products
 - **Category Management** — Organize products by category
 - **Cart & Cart Items** — Add, update, remove items from a shopping cart
 - **Order Processing** — Place orders from a cart
 - **User Management** — Create and manage users
 - **Image Handling** — Product image upload support
+
+## Authentication & Security
+
+The application uses JWT (JSON Web Tokens) for stateless authentication.
+
+### Security Configuration
+- **Secured Endpoints**: Carts and CartItems endpoints require a valid JWT.
+- **Public Endpoints**: Product and Category catalogs are publicly accessible.
+- **Authentication Flow**: Users authenticate via the user controller to receive a token, which must be included in the `Authorization: Bearer <token>` header for secured requests.
+
 
 ## Running Tests
 
@@ -105,7 +116,14 @@ mvn test
 
 ## Configuration Highlights
 
-- **JPA/Hibernate**: `ddl-auto: update` automatically creates/updates database tables based on entities.
+- **JWT Settings**: Configure the secret key and expiration in `application.yaml`:
+  ```yaml
+  auth:
+    token:
+      jwtSecret: <your-base64-encoded-secret>
+      expirationInMils: 86400000
+  ```
+- **JPA/Hibernate**: `ddl-auto: create` automatically recreates database tables on startup.
 - **SQL Logging**: Enabled with formatted SQL output for development.
 - **File Uploads**: Multipart uploads enabled with a max file size of 10MB and max request size of 50MB.
 
