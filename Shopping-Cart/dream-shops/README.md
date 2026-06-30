@@ -107,6 +107,22 @@ The application uses JWT (JSON Web Tokens) for stateless authentication.
 - **Public Endpoints**: Product and Category catalogs are publicly accessible.
 - **Authentication Flow**: Users authenticate via the user controller to receive a token, which must be included in the `Authorization: Bearer <token>` header for secured requests.
 
+## Default Seed Data
+
+The application automatically seeds the database on startup via the `DataInitializer` component.
+
+### Default Credentials
+Use these accounts to test the authentication and secured endpoints:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | `admin0@email.com` to `admin5@email.com` | `12345` |
+| User | `user0@email.com` to `user5@email.com` | `12345` |
+
+### Seeded Content
+- **Categories**: Electronics, Home & Kitchen, Clothing, Sports.
+- **Products**: A variety of items including TVs, Smartphones, Laptops, and more.
+
 
 ## Running Tests
 
