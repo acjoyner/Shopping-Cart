@@ -1,21 +1,16 @@
-# Dream Shops
-
+Dream Shops
 A Spring Boot e-commerce REST API for managing products, categories, shopping carts, orders, and users.
 
-## Tech Stack
-
-- **Java 17**
-- **Spring Boot 4.1.0**
-- **Spring Data JPA**
-- **Spring WebMVC**
-- **MySQL**
-- **Lombok**
-- **ModelMapper**
-- **Maven**
-
-## Project Structure
-
-```
+Tech Stack
+Java 17
+Spring Boot 4.1.0
+Spring Data JPA
+Spring WebMVC
+MySQL
+Lombok
+ModelMapper
+Maven
+Project Structure
 com.acjoyner.dream_shops
 ├── config          # Application configuration
 ├── controller      # REST controllers
@@ -33,86 +28,84 @@ com.acjoyner.dream_shops
     ├── order
     ├── product
     └── user
-```
+Prerequisites
+Java 17 or later
+Maven 3.8+
+MySQL 8.0+ running locally
+Database Setup
+The application expects a MySQL database named dream_shops_db:
 
-## Prerequisites
-
-- Java 17 or later
-- Maven 3.8+
-- MySQL 8.0+ running locally
-
-## Database Setup
-
-The application expects a MySQL database named `dream_shops_db`:
-
-```sql
 CREATE DATABASE IF NOT EXISTS dream_shops_db;
-```
+Default connection settings (defined in src/main/resources/application.yaml):
 
-Default connection settings (defined in `src/main/resources/application.yaml`):
+Property	Value
+URL	jdbc:mysql://localhost:3306/dream_shops_db
+Username	root
+Password	(empty)
+Update these values in application.yaml if your local MySQL setup differs.
 
-| Property | Value |
-|----------|-------|
-| URL | `jdbc:mysql://localhost:3306/dream_shops_db` |
-| Username | `root` |
-| Password | *(empty)* |
+Running the Application
+Clone or open the project in your IDE.
 
-Update these values in `application.yaml` if your local MySQL setup differs.
+Ensure MySQL is running and the dream_shops_db database exists.
 
-## Running the Application
+Build the project:
 
-1. Clone or open the project in your IDE.
-2. Ensure MySQL is running and the `dream_shops_db` database exists.
-3. Build the project:
+mvn clean install
+Run the application:
 
-   ```bash
-   mvn clean install
-   ```
+mvn spring-boot:run
+The API will be available at http://localhost:8080.
 
-4. Run the application:
+API Prefix
+All endpoints are prefixed with /api/v1 (configured in application.yaml):
 
-   ```bash
-   mvn spring-boot:run
-   ```
-
-The API will be available at `http://localhost:8080`.
-
-## API Prefix
-
-All endpoints are prefixed with `/api/v1` (configured in `application.yaml`):
-
-```yaml
 api:
   prefix: /api/v1
-```
+Example: GET http://localhost:8080/api/v1/products
 
-Example: `GET http://localhost:8080/api/v1/products`
+Key Features
+JWT Authentication — Secure access using JSON Web Tokens (JWT)
+Product Management — CRUD operations for products
+Category Management — Organize products by category
+Cart & Cart Items — Add, update, remove items from a shopping cart
+Order Processing — Place orders from a cart
+User Management — Create and manage users
+Image Handling — Product image upload support
+Authentication & Security
+The application uses JWT (JSON Web Tokens) for stateless authentication.
 
-## Key Features
+Security Configuration
+Secured Endpoints: Carts and CartItems endpoints require a valid JWT.
+Public Endpoints: Product and Category catalogs are publicly accessible.
+Authentication Flow: Users authenticate via the user controller to receive a token, which must be included in the Authorization: Bearer <token> header for secured requests.
+Default Seed Data
+The application automatically seeds the database on startup via the DataInitializer component.
 
-- **Product Management** — CRUD operations for products
-- **Category Management** — Organize products by category
-- **Cart & Cart Items** — Add, update, remove items from a shopping cart
-- **Order Processing** — Place orders from a cart
-- **User Management** — Create and manage users
-- **Image Handling** — Product image upload support
+Default Credentials
+Use these accounts to test the authentication and secured endpoints:
 
-## Running Tests
-
-```bash
+Role	Email	Password
+Admin	admin0@email.com to admin5@email.com	12345
+User	user0@email.com to user5@email.com	12345
+Seeded Content
+Categories: Electronics, Home & Kitchen, Clothing, Sports.
+Products: A variety of items including TVs, Smartphones, Laptops, and more.
+Running Tests
 mvn test
-```
 
-## Configuration Highlights
-
-- **JPA/Hibernate**: `ddl-auto: update` automatically creates/updates database tables based on entities.
-- **SQL Logging**: Enabled with formatted SQL output for development.
-- **File Uploads**: Multipart uploads enabled with a max file size of 10MB and max request size of 50MB.
-
-## Notes
-
-- This is a learning/demo project. Before production use, consider:
-  - Adding proper authentication and authorization
-  - Using environment variables or a secrets manager for database credentials
-  - Setting `ddl-auto` to `validate` or removing it in favor of migrations (e.g., Flyway/Liquibase)
-  - Adding integration tests and input validation
+Configuration Highlights
+JWT Settings: Configure the secret key and expiration in application.yaml:
+auth:
+  token:
+    jwtSecret: <your-base64-encoded-secret>
+    expirationInMils: 86400000
+JPA/Hibernate: ddl-auto: create automatically recreates database tables on startup.
+SQL Logging: Enabled with formatted SQL output for development.
+File Uploads: Multipart uploads enabled with a max file size of 10MB and max request size of 50MB.
+Notes
+This is a learning/demo project. Before production use, consider:
+Adding proper authentication and authorization
+Using environment variables or a secrets manager for database credentials
+Setting ddl-auto to validate or removing it in favor of migrations (e.g., Flyway/Liquibase)
+Adding integration tests and input validation
