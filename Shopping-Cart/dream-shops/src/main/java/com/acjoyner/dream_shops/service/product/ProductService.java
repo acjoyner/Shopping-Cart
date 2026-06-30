@@ -3,6 +3,7 @@ package com.acjoyner.dream_shops.service.product;
 
 import com.acjoyner.dream_shops.dto.ImageDto;
 import com.acjoyner.dream_shops.dto.ProductDto;
+import com.acjoyner.dream_shops.exceptions.AlreadyExistsException;
 import com.acjoyner.dream_shops.exceptions.ResourceNotFoundException;
 import com.acjoyner.dream_shops.model.Category;
 import com.acjoyner.dream_shops.model.Image;
@@ -33,6 +34,10 @@ public class ProductService implements IProductService {
         // check if the category is found in the DB
         // If yes, set it as the new product category
         // If not, save it as a new category then set it as the new product category.
+
+        if(productExists(request.getName(), request.getBrand())){
+            throw new AlreadyExistsException(request.getBrand()+" "+ request.getName()+" already exists, you may update this product instead. ");
+        }
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
                 .orElseGet(() -> {
                     Category newCategory = new Category();
@@ -41,6 +46,7 @@ public class ProductService implements IProductService {
                 });
         return productRepository.save(createProduct(request, category));
     }
+
 
     private Product createProduct(AddProductRequest request, Category category) {
         return new Product(
@@ -54,7 +60,9 @@ public class ProductService implements IProductService {
         );
     }
 
-
+    private boolean productExists(String name, String brand){
+        return productRepository.existsByNameAndBrand(name, brand);
+    }
 
     @Override
     public Product getProductById(Long id) {

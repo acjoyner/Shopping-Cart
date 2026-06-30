@@ -1,6 +1,7 @@
 package com.acjoyner.dream_shops.service.order;
 
 import com.acjoyner.dream_shops.dto.OrderDto;
+import com.acjoyner.dream_shops.dto.OrderItemDto;
 import com.acjoyner.dream_shops.enums.OrderStatus;
 import com.acjoyner.dream_shops.exceptions.ResourceNotFoundException;
 import com.acjoyner.dream_shops.model.Cart;
@@ -11,7 +12,6 @@ import com.acjoyner.dream_shops.repository.OrderRepository;
 import com.acjoyner.dream_shops.repository.ProductRepository;
 import com.acjoyner.dream_shops.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class OrderService implements IOrderService{
     private final ModelMapper modelMapper;
 
     @Override
-    public Order placeOrder(Long userId) {
+    public OrderDto placeOrder(Long userId) {
         Cart cart = cartService.getCartByUserId(userId);
         Order order = createOrder(cart);
         List<OrderItem> orderItemList = createOrderItems(order, cart);
@@ -39,17 +39,33 @@ public class OrderService implements IOrderService{
         Order savedOrder = orderRepository.save(order);
 
         cartService.clearCart(cart.getId());
-        return savedOrder;
+        return convertToDto(savedOrder);
     }
 
     @Override
     public List<OrderDto> getUserOrders(Long userId){
         List<Order> orders = orderRepository.findByUserId(userId);
-        return orders.stream().map(this::converToDto).toList();
+        return orders.stream().map(this::convertToDto).toList();
     }
 
-    private OrderDto converToDto(Order order){
-        return modelMapper.map(order, OrderDto.class);
+    private OrderDto convertToDto(Order order){
+        OrderDto orderDto = new OrderDto();
+        orderDto.setOrderId(order.getOrderId());
+        orderDto.setUserId(order.getUser().getId());
+        orderDto.setOrderDate(order.getOrderDate());
+        orderDto.setTotalAmount(order.getTotalAmount());
+        orderDto.setStatus(order.getOrderStatus().name());
+        orderDto.setItems(order.getOrderItem().stream().map(this::convertToDto).toList());
+        return orderDto;
+    }
+
+    private OrderItemDto convertToDto(OrderItem orderItem){
+        OrderItemDto orderItemDto = new OrderItemDto();
+        orderItemDto.setProductId(orderItem.getProduct().getId());
+        orderItemDto.setProductName(orderItem.getProduct().getName());
+        orderItemDto.setQuantity(orderItem.getQuantity());
+        orderItemDto.setPrice(orderItem.getPrice());
+        return orderItemDto;
     }
 
     private Order createOrder(Cart cart){
@@ -87,7 +103,7 @@ public class OrderService implements IOrderService{
     @Override
     public OrderDto getOrder(Long orderId) {
         return orderRepository.findById(orderId)
-                .map(this::converToDto)
+                .map(this::convertToDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 }
